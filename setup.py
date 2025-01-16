@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='copycode',
-    version='0.1.2',
+    version='0.2.0',
     description='Copy all your code to your clipboard or a file with one command.',
     author='MartinVeltman',
     author_email='martin.veltman@winvent.nl',

@@ -40,33 +40,40 @@ def main():
     parser.add_argument("--outfile", type=str, help="Destination file for the combined output.")
     parser.add_argument("--filetypes", type=str, help="Comma-separated list of file extensions.")
     args = parser.parse_args()
+
     project_root = os.path.abspath(args.path)
     config_path = os.path.join(project_root, ".copyconfig")
     config_excludes = []
     config_filetypes = []
+
     if os.path.exists(config_path):
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 config = yaml.safe_load(f) or {}
-                config_excludes = config.get("exclude", [])
-                config_filetypes = config.get("filetypes", [])
+                config_excludes = config.get("exclude", []) or []  # Default to an empty list
+                config_filetypes = config.get("filetypes", []) or []  # Default to an empty list
         except Exception as e:
             print(f"Error reading config file: {e}")
+
     abs_exclude_paths = []
     for item in config_excludes:
         abs_exclude_paths.append(os.path.abspath(os.path.join(args.path, item)))
+
     if args.exclude:
         cli_excludes = [x.strip() for x in args.exclude.split(",")]
         for ex in cli_excludes:
             abs_exclude_paths.append(os.path.abspath(os.path.join(args.path, ex)))
+
     used_filetypes = config_filetypes if config_filetypes else [".py", ".js", ".html"]
     if args.filetypes:
         used_filetypes = [ft.strip() for ft in args.filetypes.split(",")]
+
     combined, files_count, lines_count, processed_files = gather_files(
         os.path.abspath(args.path),
         abs_exclude_paths,
         used_filetypes
     )
+
     if args.outfile:
         try:
             with open(args.outfile, "w", encoding="utf-8") as out:

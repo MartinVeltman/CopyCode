@@ -3,6 +3,7 @@ import pyperclip
 import argparse
 import yaml
 
+
 def gather_files(root_dir, exclude_paths, filetypes):
     collected_code = []
     files_count = 0
@@ -39,17 +40,18 @@ def main():
     parser.add_argument("--outfile", type=str, help="Destination file for the combined output.")
     parser.add_argument("--filetypes", type=str, help="Comma-separated list of file extensions.")
     args = parser.parse_args()
-    default_config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    project_root = os.path.abspath(args.path)
+    config_path = os.path.join(project_root, ".copyconfig")
     config_excludes = []
     config_filetypes = []
-    if os.path.exists(default_config_path):
+    if os.path.exists(config_path):
         try:
-            with open(default_config_path, "r", encoding="utf-8") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 config = yaml.safe_load(f) or {}
                 config_excludes = config.get("exclude", [])
                 config_filetypes = config.get("filetypes", [])
-        except:
-            pass
+        except Exception as e:
+            print(f"Error reading config file: {e}")
     abs_exclude_paths = []
     for item in config_excludes:
         abs_exclude_paths.append(os.path.abspath(os.path.join(args.path, item)))
@@ -70,8 +72,8 @@ def main():
             with open(args.outfile, "w", encoding="utf-8") as out:
                 out.write(combined)
             print("All code has been written to", args.outfile)
-        except:
-            print("Could not write to", args.outfile)
+        except Exception as e:
+            print(f"Could not write to {args.outfile}: {e}")
     else:
         pyperclip.copy(combined)
         print("Your code has been copied to the clipboard.")

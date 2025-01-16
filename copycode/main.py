@@ -3,17 +3,19 @@ import pyperclip
 import argparse
 import yaml
 
-
 def gather_files(root_dir, exclude_paths, filetypes):
     collected_code = []
     files_count = 0
     lines_count = 0
     processed_files = []
     for current_dir, dirs, files in os.walk(root_dir):
-        dirs[:] = [d for d in dirs if os.path.join(current_dir, d) not in exclude_paths]
+        dirs[:] = [
+            d for d in dirs
+            if os.path.join(current_dir, d) not in exclude_paths and d not in [".venv", "node_modules"]
+        ]
         for file in files:
             full_path = os.path.join(current_dir, file)
-            if full_path in exclude_paths:
+            if full_path in exclude_paths or file == "__init__.py":
                 continue
             if any(file.endswith(ext) for ext in filetypes):
                 try:

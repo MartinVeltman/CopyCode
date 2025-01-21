@@ -53,7 +53,7 @@ copycode . --outfile=all_code.txt
 
 You can create a file named .copyconfig in your project or working directory. By default, copycode looks for a file named .copyconfig in the same directory as the main.py script. If it is not found, the defaults are used.
 
-Below is an example config.yaml:
+Below is an example .copyconfig file:
 
 ```yaml
 filetypes:

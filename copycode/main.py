@@ -12,7 +12,7 @@ def gather_files(root_dir, exclude_paths, filetypes):
     for current_dir, dirs, files in os.walk(root_dir):
         dirs[:] = [
             d for d in dirs
-            if os.path.join(current_dir, d) not in exclude_paths and d not in [".venv", "node_modules"]
+            if os.path.join(current_dir, d) not in exclude_paths and d not in [".venv", "venv", "node_modules"]
         ]
         for file in files:
             full_path = os.path.join(current_dir, file)
